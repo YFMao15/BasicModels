@@ -191,3 +191,58 @@ def boundary_plotter(mode,np_data,*args):
         sub2.scatter(np_data['E5'][0],np_data['E5'][1],label='E5 point',color='green',marker='o',s=40)
         plt.pause(10)
         plt.close()
+        
+    elif mode=='k-means':
+        k_means=args[0]
+        keys=np_data.keys()
+        false_num=0.0
+        sample_num=0.0
+        plt.ion()
+        plt.subplot(121)
+        plt.title('2D scattering plot of training samples')
+        plt.xlabel('Coordinate on first dimension')
+        plt.ylabel('Coordinate on second dimension')
+        plt.legend('E3: circle; E5: cross, center1: green, center2 blue')
+        plt.scatter(k_means.cluster_centers_[0][0],k_means.cluster_centers_[0][1],c='red',s=300)
+        plt.scatter(k_means.cluster_centers_[1][0],k_means.cluster_centers_[1][1],c='red',s=300)
+        plt.subplot(122)
+        plt.title('Distance to two centers')
+        plt.xlabel('Distance to center 1')
+        plt.ylabel('Distance to center 2')
+        plt.legend('E3: circle; E5: cross, center1: green, center2: black')
+        for key in keys:
+            temp_num=np_data[key].shape[1]
+            sample_num+=temp_num
+            distance_list1=[]
+            distance_list2=[]
+            for count in range(temp_num):
+                distance1=np.dot(np_data[key][:,count],k_means.cluster_centers_[0])
+                distance2=np.dot(np_data[key][:,count],k_means.cluster_centers_[1])  
+                
+                if (key=='E3')&(distance1<distance2):
+                    plt.subplot(121)
+                    plt.scatter(np_data[key][0,count],np_data[key][1,count],c='green',s=100,marker='o',alpha=0.7)
+                    plt.subplot(122)
+                    plt.scatter(distance1,distance2,c='green',s=50,marker='o',alpha=0.7)
+                    false_num+=1
+                elif (key=='E5')&(distance1>distance2):
+                    plt.subplot(121)
+                    plt.scatter(np_data[key][0,count],np_data[key][1,count],c='black',s=100,marker='X',alpha=0.7)
+                    plt.subplot(122)
+                    plt.scatter(distance1,distance2,c='black',s=50,marker='X',alpha=0.7)
+                    false_num+=1      
+                elif (key=='E5')&(distance1<distance2):
+                    plt.subplot(121)
+                    plt.scatter(np_data[key][0,count],np_data[key][1,count],c='green',s=100,marker='X',alpha=0.7)
+                    plt.subplot(122)
+                    plt.scatter(distance1,distance2,c='green',s=50,marker='X',alpha=0.7)
+                elif (key=='E3')&(distance1>distance2):
+                    plt.subplot(121)
+                    plt.scatter(np_data[key][0,count],np_data[key][1,count],c='black',s=100,marker='o',alpha=0.7)
+                    plt.subplot(122)
+                    plt.scatter(distance1,distance2,c='black',s=50,marker='o',alpha=0.7)
+            
+        plt.pause(2)
+        plt.ioff()
+        plt.close()
+        print('The accuracy of K-means cluster is %.3f' % (false_num/sample_num))
