@@ -30,6 +30,6 @@ if __name__=='__main__':
     PCA_result=PCA_function(np_normed_train_data10,n_components)
     np_trans_train_data=feature_projection(np_normed_train_data10,PCA_result)
     k_means=Kmeans_clustering('train',np_trans_train_data)
-    boundary_plotter('train',np_trans_train_data,k_means)
+    boundary_plotter('k_means',np_trans_train_data,k_means)
     np_trans_test_data=feature_projection(np_normed_test_data10,PCA_result)
-    boundary_plotter('test',np_trans_test_data,k_means)
+    boundary_plotter('k_means',np_trans_test_data,k_means)
